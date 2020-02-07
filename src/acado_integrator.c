@@ -74,7 +74,7 @@ real_t* a = auxVar;
 a[0] = (tan(od[2]));
 
 /* Compute outputs: */
-out[0] = (od[0]+(((od[0]*od[1])+(real_t)(1.0000000000000001e-01))*a[0]));
+out[0] = ((od[0]*(real_t)(5.0000000000000000e-01))+(((od[0]*od[1])+(real_t)(2.0000000000000001e-01))*a[0]));
 out[1] = u[0];
 }
 
@@ -169,10 +169,10 @@ b[1] = rk_dim2_bPerm[1];
 
 /** Column vector of size: 1 */
 static const real_t acado_Ah_mat[ 1 ] = 
-{ 2.5000000000000001e-02 };
+{ 5.0000000000000003e-02 };
 
 
-/* Fixed step size:0.05 */
+/* Fixed step size:0.1 */
 int acado_integrate( real_t* const rk_eta, int resetIntegrator )
 {
 int error;
@@ -293,7 +293,7 @@ rk_diffK[i + 1] = rk_b[i * 2 + 1];
 for (i = 0; i < 2; ++i)
 {
 rk_diffsNew2[(i * 3) + (run1)] = (i == run1-0);
-rk_diffsNew2[(i * 3) + (run1)] += + rk_diffK[i]*(real_t)5.0000000000000003e-02;
+rk_diffsNew2[(i * 3) + (run1)] += + rk_diffK[i]*(real_t)1.0000000000000001e-01;
 }
 }
 for (run1 = 0; run1 < 1; ++run1)
@@ -315,11 +315,11 @@ rk_diffK[i + 1] = rk_b[i * 2 + 1];
 }
 for (i = 0; i < 2; ++i)
 {
-rk_diffsNew2[(i * 3) + (run1 + 2)] = + rk_diffK[i]*(real_t)5.0000000000000003e-02;
+rk_diffsNew2[(i * 3) + (run1 + 2)] = + rk_diffK[i]*(real_t)1.0000000000000001e-01;
 }
 }
-rk_eta[0] += + rk_kkk[0]*(real_t)5.0000000000000003e-02;
-rk_eta[1] += + rk_kkk[1]*(real_t)5.0000000000000003e-02;
+rk_eta[0] += + rk_kkk[0]*(real_t)1.0000000000000001e-01;
+rk_eta[1] += + rk_kkk[1]*(real_t)1.0000000000000001e-01;
 if( run == 0 ) {
 for (i = 0; i < 2; ++i)
 {

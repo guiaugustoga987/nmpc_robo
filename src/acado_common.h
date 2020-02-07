@@ -62,7 +62,7 @@ extern "C"
 /** Indicator for fixed initial state. */
 #define ACADO_INITIAL_STATE_FIXED 1
 /** Number of control/estimation intervals. */
-#define ACADO_N 20
+#define ACADO_N 5
 /** Number of online data values. */
 #define ACADO_NOD 3
 /** Number of path constraints. */
@@ -80,7 +80,7 @@ extern "C"
 /** Number of references/measurements on the last (N + 1)st node. */
 #define ACADO_NYN 2
 /** Total number of QP optimization variables. */
-#define ACADO_QP_NV 20
+#define ACADO_QP_NV 5
 /** Number of integration steps per shooting interval. */
 #define ACADO_RK_NIS 2
 /** Number of Runge-Kutta stages per integration step. */

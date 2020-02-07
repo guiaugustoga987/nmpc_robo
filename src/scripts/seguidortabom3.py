@@ -6,6 +6,7 @@
 import rospy, cv2, cv_bridge, numpy, sys
 from sensor_msgs.msg import Image
 from geometry_msgs.msg import Twist
+from random import randint
 import numpy as np
 from roslib import message
 import sensor_msgs.point_cloud2 as pc2
@@ -44,6 +45,9 @@ class Follower:
                 self.erro = 0
                 self.minimo = 0
                 self.bridge = cv_bridge.CvBridge()
+                self.omega = 0
+                self.omega_atual = 0
+                self.omega_anterior = 0
                 cv2.namedWindow("window", 1)
 
                 self.image_sub = rospy.Subscriber('/camera/rgb/image_raw',
@@ -56,24 +60,19 @@ class Follower:
                 rospy.Subscriber('/camera/depth/image_raw',Image,self.get_distance)
 
                 rospy.Subscriber('/odom',Odometry,self.callback_odom)
-                self.omega = 3.3
-                self.ze = 2.2
-                self.thetar = 5.7
-                print('entrou aqui 1')
-                self.otimiza = self.callback_client(self.omega,self.ze,self.thetar)
+
+                #self.otimiza = self.callback_client(self.omega,self.ze,self.thetar)
 
                 
         def callback_client(self,omega,ze,thetar):
                 rospy.wait_for_service('otimizador')
                 try:
                         self.otimizador = rospy.ServiceProxy('otimizador', otimizador)
-                        resposta = self.otimizador(omega,ze,thetar)
-                        print('resposta:', resposta.u)
-                        return resposta.u
+                        self.resposta = self.otimizador(self.omega,self.ze,self.thetar)
+                        print('resposta:', self.resposta.u)
+                        return self.resposta.u
                 except rospy.ServiceException, e:
-                        print "Falhou caralho: %s" %e
-                        
-                rospy.spin()
+                        print "Falhou de novo haha: %s" %e
 
 
         def callback_odom(self,msg):
@@ -105,8 +104,7 @@ class Follower:
             euler = euler_from_quaternion(quaternion)
             roll = euler[0]
             pitch = euler[1]
-            yaw = euler[2]
-                
+            yaw = euler[2]        
 
 
         def get_distance(self,img):
@@ -120,19 +118,7 @@ class Follower:
 
               
         def image_callback(self, msg):
-                
-                
-                fat = 0
-                
-                ptime = 0
-                frep = []
-                ftot = 0
-                krep = 6
-                distobs1 = []
-                katt = 2
-                rho = 0
-
-                
+                    
                 #rate = rospy.Rate(10)
 
                 image = self.bridge.imgmsg_to_cv2(msg,desired_encoding='bgr8')
@@ -140,55 +126,114 @@ class Follower:
                 lower_yellow = numpy.array([10, 10, 10])
                 upper_yellow = numpy.array([255,255,250])
                 mask = cv2.inRange(hsv, lower_yellow, upper_yellow)
+                mask1 = cv2.inRange(hsv, lower_yellow, upper_yellow)
+                mask2 = cv2.inRange(hsv, lower_yellow, upper_yellow)
 
+                ############################## Máscaras Para extração dos 3 pontos para calcular a curvatura da linha ################################################
                 h, w, d = image.shape
                 
-                search_top = 3*h/4
-                search_bot = search_top + 300
-                mask[0:search_top, 0:w] = 0
-                mask[search_bot:h, 0:w] = 0
-                
-                    
-                
+                dist = 20
+                search_top = 290 ## 450 (Eu mudei pra 290 então os valores comentados vão ta diferente)
+                search_bot = search_top + dist ## 470
+                mask[0:search_top, 0:w] = 0 ## 0 - 450 
+                mask[search_bot:h, 0:w] = 0 ## 470 - 600
 
+                search_top1 = search_top - dist ## 430
+                search_bot1 = search_top1 + dist ## 450 
+                mask1[0:search_top1, 0:w] = 0 ## 0 - 430
+                mask1[search_bot1:h, 0:w] = 0 ## 450 - 600
+                
+                search_top2 = search_bot1 + dist ## 470
+                search_bot2 = search_top2 + dist ## 490 
+                mask2[0:search_top2, 0:w] = 0 ## 0 - 470
+                mask2[search_bot2:h, 0:w] = 0 ## 490 - 600
+
+                #As máscaras servem para limitar a extração dos centróides em uma determinada faixa de pixels (Faixas de altura h(600 pixels))
+                M2 = cv2.moments(mask2)
+                M1 = cv2.moments(mask1)
                 M = cv2.moments(mask)
-                #print('M',M)
-                if M['m00'] > 0 and self.flag1 == 0:
+
+                if M['m00'] > 0 : ## Ponto Principal : Pr
                         
                     cx = int(M['m10']/M['m00'])
                     cy = int(M['m01']/M['m00'])
-                    cv2.circle(image, (cx, cy), 20, (0,0,255), -1)
+                    cv2.circle(image, (cx, cy), 5, (0,0,255), -1)
 
-                    fatt = cx - w/2
-                    self.erro = cx - w/2
-                    #print('fat',fatt)
+                    self.erro = cx - w/2 # Erro é o ponto do centróide em relação ao centro da câmera (w/2)
+ 
 
-                    self.z = float(fatt) / 600
-                    #print ('fatt',self.z)
-                    ftot = self.z
-                    #print('frep')  
-                    #self.twist.linear.x = 0
-                    #self.twist.angular.z = 0
+                if M1['m00'] > 0 : ## Ponto auxiliar P1
+                        
+                    cx1 = int(M1['m10']/M1['m00'])
+                    cy1 = int(M1['m01']/M1['m00'])
+                    cv2.circle(image, (cx1, cy1), 5, (255,0,0), -1)
 
-                    #gamarep = np.arctan2(frep[1],frep[0]) 
-                    self.twist.linear.x = 0.6
-                    self.twist.angular.z = ftot                
+                if M2['m00'] > 0 : # Ponto auxiliar P2
+                    cx2 = int(M2['m10']/M2['m00'])
+                    cy2 = int(M2['m01']/M2['m00'])
+                    cv2.circle(image, (cx2, cy2), 5, (255,0,0), -1)
+                ###########################################################################################################################
+                   
+                ## Cálculo da curvatura ###################################################################################################
 
-
-                    
+                a = np.array([[cx1,cy1],[cx,cy],[cx2,cy2]]) # Ponto auxiliar 1 - Ponto Pr - Ponto Auxiliar 2
                 
 
-                
+                #Cálculo das derivadas Primeiras
+                dx_dt = np.gradient(a[:, 0])
+                dy_dt = np.gradient(a[:, 1])
+                velocity = np.array([ [dx_dt[i], dy_dt[i]] for i in range(dx_dt.size)]) ## Vetor Velocidade
+                #print(velocity)
+                ds_dt = np.sqrt(dx_dt * dx_dt + dy_dt * dy_dt) ## Vetor Aceleração
 
-                dt = rospy.get_time() - ptime
-                #self.lastz = self.z
-                #ftot = self.z + ((self.z - self.lastz)/(dt)*0.5)+1.5*gamarep #estático 1.1
-                
+                tangent = np.array([1/ds_dt] * 2).transpose() * velocity ## Vetor Tangente Unitário
 
+                tangent_x = tangent[:, 0]
+                tangent_y = tangent[:, 1]
+
+                deriv_tangent_x = np.gradient(tangent_x)
+                deriv_tangent_y = np.gradient(tangent_y)
+
+                dT_dt = np.array([ [deriv_tangent_x[i], deriv_tangent_y[i]] for i in range(deriv_tangent_x.size)])
+
+                length_dT_dt = np.sqrt(deriv_tangent_x * deriv_tangent_x + deriv_tangent_y * deriv_tangent_y)
+
+                normal = np.array([1/length_dT_dt] * 2).transpose() * dT_dt # Vetor Unitário Normal
+
+                ## Cálculo das Derivadas segundas
+                d2s_dt2 = np.gradient(ds_dt) 
+                d2x_dt2 = np.gradient(dx_dt)
+                d2y_dt2 = np.gradient(dy_dt)
+
+                curvature = np.abs(d2x_dt2 * dy_dt - dx_dt * d2y_dt2) / (dx_dt * dx_dt + dy_dt * dy_dt)**1.5 ## Cálculo da Curvatura
+
+
+                #################################################################################################################################
+
+
+                vel_linear = 1 # Velocidade Linear do robô
+                conv = 0.00125 #Conversão de metros 
+                h1 = 0.5  # 0.5 metros
+                self.ze = (self.erro)*(conv) # Z (metros) é igual ao erro (o quanto o centróide está distante do centro da câmera) multiplicado por um fator de conversão (pixel para metros)
+                self.thetar = np.arctan2(self.ze,h1) # ThetaR é igual a tangente entre o erro Z e a distância da câmera ao centróide (z) em Rad.
+
+                self.omega = self.omega_anterior
+                print('ze',self.ze)
+                print ('thetar',self.thetar)
+                print ('omega',self.omega)
+
+
+                self.otimiza = self.callback_client(self.omega,self.ze,self.thetar) # Manda as variáveis de interesse para o otimizador.
+                uoptimal = self.resposta.u ## A variavel de entrada u é recebida pela variável resposta.u .
+
+                self.omega_atual = (uoptimal*np.cos(self.thetar) + curvature[1]*vel_linear) / ((np.cos(self.thetar) - curvature[1]*self.ze)) # Cálculo do omega que será aplicado ao robô
+
+                self.twist.linear.x = vel_linear
+                self.twist.angular.z = -(self.omega_atual)
+                self.omega_anterior = self.omega_atual          
 
                 #self.twist.linear.x = 0
                 #self.twist.angular.z = 0
-                ptime = rospy.get_time()
 
 
                             
@@ -196,7 +241,8 @@ class Follower:
                 self.cmd_vel_pub.publish(self.twist)
 
                 cv2.imshow("window", image)
-                cv2.imshow("window1",mask )
+                cv2.imshow("window1",mask)
+                #cv2.imshow("window1",mask1)
 
                 cv2.waitKey(3)
 

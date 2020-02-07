@@ -15,7 +15,7 @@
 
 #define N           ACADO_N   /* Number of intervals in the horizon. */
 
-#define NUM_STEPS   10        /* Number of real-time iterations. */
+#define NUM_STEPS   5        /* Number of real-time iterations. */
 #define VERBOSE     1         /* Show iterations: 1, silent: 0.  */
 
 /* Global variables used by the solver. */

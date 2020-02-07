@@ -45,7 +45,6 @@ OBJECTS = \
 	acado_integrator.o \
 	acado_solver.o \
 	acado_auxiliary_functions.o
-	
 
 .PHONY: all
 all: libacado_exported_rti.a test
@@ -60,8 +59,6 @@ acado_auxiliary_functions.o : acado_common.h \
 test.o                      : acado_common.h \
                               acado_qpoases_interface.hpp \
                               acado_auxiliary_functions.h
-
-
 
 libacado_exported_rti.a: ${OBJECTS}
 	ar r $@ $?
