@@ -252,6 +252,19 @@ target_include_directories(nmpc_robo_lib PUBLIC
 ## Add folders to be run by python nosetests
 # catkin_add_nosetests(test)
 
+find_package(gazebo REQUIRED)
+include_directories(${GAZEBO_INCLUDE_DIRS})
+link_directories(${GAZEBO_LIBRARY_DIRS})
+list(APPEND CMAKE_CXX_FLAGS "${GAZEBO_CXX_FLAGS}")
+add_executable(gazeboCameraPlugin
+  src/gazeboCameraPlugin.cpp
+)
+target_link_libraries(gazeboCameraPlugin
+  ${catkin_LIBRARIES}
+  ${GAZEBO_LIBRARIES}
+  pthread
+)
+
 add_executable(otimizador src/otimizador.cpp)
 target_link_libraries(otimizador ${catkin_LIBRARIES})
 target_link_libraries(otimizador nmpc_robo_lib)
