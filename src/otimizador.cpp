@@ -59,11 +59,14 @@ int    acado_preparationStep();
 // Fim da Inicialização
 
 // Variáveis vindas do nó de controle
-acadoVariables.x0[0] = req.b; // Z
-acadoVariables.x0[1] = req.c; // ThetaR
-acadoVariables.od[0] = req.a; // omega
-acadoVariables.od[1] = req.b; // Z
-acadoVariables.od[2] = req.c; // ThetaR
+acadoVariables.x0[0] = req.d; // Z
+acadoVariables.x0[1] = req.e; // PhiR
+acadoVariables.od[0] = req.a; // roll
+acadoVariables.od[1] = req.b; // pitch
+acadoVariables.od[2] = req.c; // yaw
+acadoVariables.od[3] = req.d; // z
+acadoVariables.od[4] = req.e; // phir
+acadoVariables.od[5] = req.f; // r
 //
 
 // Inicio do Solver

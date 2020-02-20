@@ -64,7 +64,7 @@ extern "C"
 /** Number of control/estimation intervals. */
 #define ACADO_N 5
 /** Number of online data values. */
-#define ACADO_NOD 3
+#define ACADO_NOD 6
 /** Number of path constraints. */
 #define ACADO_NPAC 0
 /** Number of control variables. */
@@ -80,7 +80,7 @@ extern "C"
 /** Number of references/measurements on the last (N + 1)st node. */
 #define ACADO_NYN 2
 /** Total number of QP optimization variables. */
-#define ACADO_QP_NV 5
+#define ACADO_QP_NV 20
 /** Number of integration steps per shooting interval. */
 #define ACADO_RK_NIS 2
 /** Number of Runge-Kutta stages per integration step. */
@@ -116,11 +116,11 @@ real_t x[ 42 ];
  */
 real_t u[ 20 ];
 
-/** Matrix of size: 21 x 3 (row major format)
+/** Matrix of size: 21 x 6 (row major format)
  * 
  *  Matrix containing 21 online data vectors.
  */
-real_t od[ 63 ];
+real_t od[ 126 ];
 
 /** Column vector of size: 60
  * 
@@ -175,8 +175,8 @@ real_t ubAValues[ 40 ];
  */
 typedef struct ACADOworkspace_
 {
-/** Column vector of size: 1 */
-real_t rhs_aux[ 1 ];
+/** Column vector of size: 7 */
+real_t rhs_aux[ 7 ];
 
 /** Column vector of size: 40 */
 real_t d[ 40 ];
@@ -193,8 +193,8 @@ real_t evGx[ 80 ];
 /** Column vector of size: 40 */
 real_t evGu[ 40 ];
 
-/** Row vector of size: 6 */
-real_t objValueIn[ 6 ];
+/** Row vector of size: 9 */
+real_t objValueIn[ 9 ];
 
 /** Row vector of size: 3 */
 real_t objValueOut[ 3 ];
@@ -260,7 +260,7 @@ real_t y[ 60 ];
 
 /** Performs the integration and sensitivity propagation for one shooting interval.
  *
- *  \param rk_eta Working array of size 6 to pass the input values and return the results.
+ *  \param rk_eta Working array of size 9 to pass the input values and return the results.
  *  \param resetIntegrator The internal memory of the integrator can be reset.
  *
  *  \return Status code of the integrator.

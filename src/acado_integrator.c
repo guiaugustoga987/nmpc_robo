@@ -25,13 +25,13 @@ real_t rk_dim2_swap;
 /** Column vector of size: 2 */
 real_t rk_dim2_bPerm[ 2 ];
 
-/** Column vector of size: 1 */
-real_t auxVar[ 1 ];
+/** Column vector of size: 7 */
+real_t auxVar[ 7 ];
 
 real_t rk_ttt;
 
-/** Row vector of size: 6 */
-real_t rk_xxx[ 6 ];
+/** Row vector of size: 9 */
+real_t rk_xxx[ 9 ];
 
 /** Column vector of size: 2 */
 real_t rk_kkk[ 2 ];
@@ -67,14 +67,20 @@ void acado_rhs(const real_t* in, real_t* out)
 const real_t* xd = in;
 const real_t* u = in + 2;
 const real_t* od = in + 3;
-/* Vector of auxiliary variables; number of elements: 1. */
+/* Vector of auxiliary variables; number of elements: 7. */
 real_t* a = auxVar;
 
 /* Compute intermediate quantities: */
-a[0] = (tan(od[2]));
+a[0] = (cos(od[0]));
+a[1] = (cos(od[1]));
+a[2] = (cos(od[0]));
+a[3] = (cos(od[1]));
+a[4] = (cos(od[1]));
+a[5] = (cos(od[2]));
+a[6] = (tan(od[4]));
 
 /* Compute outputs: */
-out[0] = ((od[0]*(real_t)(5.0000000000000000e-01))+(((od[0]*od[1])+(real_t)(2.0000000000000001e-01))*a[0]));
+out[0] = ((((a[0]/a[1])*od[5])*(real_t)(5.0000000000000000e-01))+(((((a[2]/a[3])*od[5])*od[3])+((a[4]*a[5])*(real_t)(2.0000000000000001e-01)))*a[6]));
 out[1] = u[0];
 }
 
@@ -192,6 +198,9 @@ rk_xxx[2] = rk_eta[8];
 rk_xxx[3] = rk_eta[9];
 rk_xxx[4] = rk_eta[10];
 rk_xxx[5] = rk_eta[11];
+rk_xxx[6] = rk_eta[12];
+rk_xxx[7] = rk_eta[13];
+rk_xxx[8] = rk_eta[14];
 
 for (run = 0; run < 2; ++run)
 {
