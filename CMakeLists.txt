@@ -265,6 +265,34 @@ target_link_libraries(gazeboCameraPlugin
   pthread
 )
 
+add_executable(toPublishV2
+  src/toPublishV2.cpp
+)
+target_link_libraries(toPublishV2
+
+  ${catkin_LIBRARIES}
+  ${Boost_LIBRARIES}
+)
+
+add_executable(TwstStoOffboard
+  src/TwstStoOffboard.cpp
+)
+target_link_libraries(TwstStoOffboard
+  ${projetoVant}
+  ${fuzzy}
+  ${catkin_LIBRARIES}
+  ${Boost_LIBRARIES}
+)
+
+add_executable(send_fixed_pose
+  src/send_fixed_pose.cpp
+)
+target_link_libraries(send_fixed_pose
+
+  ${catkin_LIBRARIES}
+  ${Boost_LIBRARIES}
+)
+
 add_executable(otimizador src/otimizador.cpp)
 target_link_libraries(otimizador ${catkin_LIBRARIES})
 target_link_libraries(otimizador nmpc_robo_lib)
