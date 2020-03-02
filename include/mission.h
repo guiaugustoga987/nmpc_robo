@@ -30,13 +30,13 @@
 //#include <Eigen/Core>
 //#include <Eigen/Geometry>
 //#include <Eigen/LU>
-#include "/home/gapc/catkin_ws/src/nmpc_robo/include/Eigen/Core"
-#include "/home/gapc/catkin_ws/src/nmpc_robo/include/Eigen/Geometry"
-#include "/home/gapc/catkin_ws/src/nmpc_robo/include/Eigen/LU"
+#include "/home/viki/catkin_ws/src/nmpc_robo/include/Eigen/Core"
+#include "/home/viki/catkin_ws/src/nmpc_robo/include/Eigen/Geometry"
+#include "/home/viki/catkin_ws/src/nmpc_robo/include/Eigen/LU"
 
 //#include <vant/vaant.h>
 //#include "../rapidjson/document.h" //ESTAVA ASSIM ANTES
-#include "/home/gapc/catkin_ws/src/nmpc_robo/include/rapidjson/document.h" //RODRIGO ALTEROU
+#include "/home/viki/catkin_ws/src/nmpc_robo/include/rapidjson/document.h" //RODRIGO ALTEROU
 
 using namespace std;
 //using namespace rapidjson;

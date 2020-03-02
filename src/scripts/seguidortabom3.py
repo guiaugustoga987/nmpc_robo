@@ -27,6 +27,8 @@ integralZ = 0
 last_erroZ = 0
 distH = 0
 vel_linear = 0
+integral = 0
+last_erro = 0
 
 # Funcionou para mundotrab3.world
 # mundo4.world ta bom tbm
@@ -82,6 +84,14 @@ class Follower:
             derivative = erro - last_erroZ
             last_erroZ = erro
             return kp * erro + ki * integralZ + kd * derivative
+
+        def pid(self, erro, kp, ki, kd):
+            global integral
+            global last_erro
+            integral += erro
+            derivative = erro - last_erro
+            last_erro = erro
+            return kp * erro + ki * integral + kd * derivative
 
 
 
@@ -261,7 +271,7 @@ class Follower:
                 self.twistS.twist.linear.x = vel_linear*np.cos(yaw)
                 self.twistS.twist.linear.y = vel_linear*np.sin(yaw)
                 #print(self.twistS.twist.linear.x)
-                self.twistS.twist.angular.z = 4*(self.r_atual)
+                self.twistS.twist.angular.z = self.pid(self.r_atual, 3, 0.1, 0.0)
                 self.r_anterior = self.r_atual   
                 print(self.ze)
      
@@ -284,4 +294,3 @@ class Follower:
 rospy.init_node('line_follower')
 follower = Follower()
 rospy.spin()
-
