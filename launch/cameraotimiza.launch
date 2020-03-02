@@ -1,0 +1,12 @@
+<launch>
+	<node 
+		pkg="nmpc_robo" 
+		name="camera" 
+		type="gazeboCameraPlugin" >
+	</node>
+	<node 
+		pkg="nmpc_robo" 
+		name="otimizador" 
+		type="otimizador" >
+	</node>
+</launch>

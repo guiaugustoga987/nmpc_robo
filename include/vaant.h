@@ -46,9 +46,9 @@
 //#include <Eigen/Core>
 //#include <Eigen/Geometry>
 //#include <Eigen/LU>
-#include "/home/viki/catkin_ws/src/nmpc_robo/include/Eigen/Core"
-#include "/home/viki/catkin_ws/src/nmpc_robo/include/Eigen/Geometry"
-#include "/home/viki/catkin_ws/src/nmpc_robo/include/Eigen/LU"
+#include "/home/gapc/catkin_ws/src/nmpc_robo/include/Eigen/Core"
+#include "/home/gapc/catkin_ws/src/nmpc_robo/include/Eigen/Geometry"
+#include "/home/gapc/catkin_ws/src/nmpc_robo/include/Eigen/LU"
 
 // #### JSON ### //
 //#include "../rapidjson/document.h"
@@ -57,9 +57,9 @@
 //#include <nmpc_robo/mission.h>
 //#include <nmpc_robo/vision.h>
 //#include <nmpc_robo/ToOffboard.h> // definition of the mensagem to toPublish node
-#include "/home/viki/catkin_ws/src/nmpc_robo/include/mission.h"
+#include "/home/gapc/catkin_ws/src/nmpc_robo/include/mission.h"
 //#include "/home/viki/catkin_ws/src/nmpc_robo/include/vision.h"
-#include "/home/viki/catkin_ws/src/nmpc_robo/include/ToOffboard.h"
+#include "/home/gapc/catkin_ws/src/nmpc_robo/include/ToOffboard.h"
 
 #include "/opt/ros/melodic/include/mavlink/v2.0/common/mavlink.h"
 

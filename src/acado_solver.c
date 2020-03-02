@@ -29,8 +29,8 @@
 /******************************************************************************/
 
 
-/** Row vector of size: 15 */
-real_t state[ 15 ];
+/** Row vector of size: 17 */
+real_t state[ 17 ];
 
 int acado_modelSimulation(  )
 {
@@ -45,12 +45,14 @@ state[0] = acadoVariables.x[lRun1 * 2];
 state[1] = acadoVariables.x[lRun1 * 2 + 1];
 
 state[8] = acadoVariables.u[lRun1];
-state[9] = acadoVariables.od[lRun1 * 6];
-state[10] = acadoVariables.od[lRun1 * 6 + 1];
-state[11] = acadoVariables.od[lRun1 * 6 + 2];
-state[12] = acadoVariables.od[lRun1 * 6 + 3];
-state[13] = acadoVariables.od[lRun1 * 6 + 4];
-state[14] = acadoVariables.od[lRun1 * 6 + 5];
+state[9] = acadoVariables.od[lRun1 * 8];
+state[10] = acadoVariables.od[lRun1 * 8 + 1];
+state[11] = acadoVariables.od[lRun1 * 8 + 2];
+state[12] = acadoVariables.od[lRun1 * 8 + 3];
+state[13] = acadoVariables.od[lRun1 * 8 + 4];
+state[14] = acadoVariables.od[lRun1 * 8 + 5];
+state[15] = acadoVariables.od[lRun1 * 8 + 6];
+state[16] = acadoVariables.od[lRun1 * 8 + 7];
 
 ret = acado_integrate(state, 1);
 
@@ -96,12 +98,14 @@ for (runObj = 0; runObj < 20; ++runObj)
 acadoWorkspace.objValueIn[0] = acadoVariables.x[runObj * 2];
 acadoWorkspace.objValueIn[1] = acadoVariables.x[runObj * 2 + 1];
 acadoWorkspace.objValueIn[2] = acadoVariables.u[runObj];
-acadoWorkspace.objValueIn[3] = acadoVariables.od[runObj * 6];
-acadoWorkspace.objValueIn[4] = acadoVariables.od[runObj * 6 + 1];
-acadoWorkspace.objValueIn[5] = acadoVariables.od[runObj * 6 + 2];
-acadoWorkspace.objValueIn[6] = acadoVariables.od[runObj * 6 + 3];
-acadoWorkspace.objValueIn[7] = acadoVariables.od[runObj * 6 + 4];
-acadoWorkspace.objValueIn[8] = acadoVariables.od[runObj * 6 + 5];
+acadoWorkspace.objValueIn[3] = acadoVariables.od[runObj * 8];
+acadoWorkspace.objValueIn[4] = acadoVariables.od[runObj * 8 + 1];
+acadoWorkspace.objValueIn[5] = acadoVariables.od[runObj * 8 + 2];
+acadoWorkspace.objValueIn[6] = acadoVariables.od[runObj * 8 + 3];
+acadoWorkspace.objValueIn[7] = acadoVariables.od[runObj * 8 + 4];
+acadoWorkspace.objValueIn[8] = acadoVariables.od[runObj * 8 + 5];
+acadoWorkspace.objValueIn[9] = acadoVariables.od[runObj * 8 + 6];
+acadoWorkspace.objValueIn[10] = acadoVariables.od[runObj * 8 + 7];
 
 acado_evaluateLSQ( acadoWorkspace.objValueIn, acadoWorkspace.objValueOut );
 acadoWorkspace.Dy[runObj * 3] = acadoWorkspace.objValueOut[0];
@@ -111,12 +115,14 @@ acadoWorkspace.Dy[runObj * 3 + 2] = acadoWorkspace.objValueOut[2];
 }
 acadoWorkspace.objValueIn[0] = acadoVariables.x[40];
 acadoWorkspace.objValueIn[1] = acadoVariables.x[41];
-acadoWorkspace.objValueIn[2] = acadoVariables.od[120];
-acadoWorkspace.objValueIn[3] = acadoVariables.od[121];
-acadoWorkspace.objValueIn[4] = acadoVariables.od[122];
-acadoWorkspace.objValueIn[5] = acadoVariables.od[123];
-acadoWorkspace.objValueIn[6] = acadoVariables.od[124];
-acadoWorkspace.objValueIn[7] = acadoVariables.od[125];
+acadoWorkspace.objValueIn[2] = acadoVariables.od[160];
+acadoWorkspace.objValueIn[3] = acadoVariables.od[161];
+acadoWorkspace.objValueIn[4] = acadoVariables.od[162];
+acadoWorkspace.objValueIn[5] = acadoVariables.od[163];
+acadoWorkspace.objValueIn[6] = acadoVariables.od[164];
+acadoWorkspace.objValueIn[7] = acadoVariables.od[165];
+acadoWorkspace.objValueIn[8] = acadoVariables.od[166];
+acadoWorkspace.objValueIn[9] = acadoVariables.od[167];
 acado_evaluateLSQEndTerm( acadoWorkspace.objValueIn, acadoWorkspace.objValueOut );
 
 acadoWorkspace.DyN[0] = acadoWorkspace.objValueOut[0];
@@ -1147,12 +1153,14 @@ for (index = 0; index < 20; ++index)
 state[0] = acadoVariables.x[index * 2];
 state[1] = acadoVariables.x[index * 2 + 1];
 state[8] = acadoVariables.u[index];
-state[9] = acadoVariables.od[index * 6];
-state[10] = acadoVariables.od[index * 6 + 1];
-state[11] = acadoVariables.od[index * 6 + 2];
-state[12] = acadoVariables.od[index * 6 + 3];
-state[13] = acadoVariables.od[index * 6 + 4];
-state[14] = acadoVariables.od[index * 6 + 5];
+state[9] = acadoVariables.od[index * 8];
+state[10] = acadoVariables.od[index * 8 + 1];
+state[11] = acadoVariables.od[index * 8 + 2];
+state[12] = acadoVariables.od[index * 8 + 3];
+state[13] = acadoVariables.od[index * 8 + 4];
+state[14] = acadoVariables.od[index * 8 + 5];
+state[15] = acadoVariables.od[index * 8 + 6];
+state[16] = acadoVariables.od[index * 8 + 7];
 
 acado_integrate(state, index == 0);
 
@@ -1187,12 +1195,14 @@ else
 {
 state[8] = acadoVariables.u[19];
 }
-state[9] = acadoVariables.od[120];
-state[10] = acadoVariables.od[121];
-state[11] = acadoVariables.od[122];
-state[12] = acadoVariables.od[123];
-state[13] = acadoVariables.od[124];
-state[14] = acadoVariables.od[125];
+state[9] = acadoVariables.od[160];
+state[10] = acadoVariables.od[161];
+state[11] = acadoVariables.od[162];
+state[12] = acadoVariables.od[163];
+state[13] = acadoVariables.od[164];
+state[14] = acadoVariables.od[165];
+state[15] = acadoVariables.od[166];
+state[16] = acadoVariables.od[167];
 
 acado_integrate(state, 1);
 
@@ -1259,12 +1269,14 @@ for (lRun1 = 0; lRun1 < 20; ++lRun1)
 acadoWorkspace.objValueIn[0] = acadoVariables.x[lRun1 * 2];
 acadoWorkspace.objValueIn[1] = acadoVariables.x[lRun1 * 2 + 1];
 acadoWorkspace.objValueIn[2] = acadoVariables.u[lRun1];
-acadoWorkspace.objValueIn[3] = acadoVariables.od[lRun1 * 6];
-acadoWorkspace.objValueIn[4] = acadoVariables.od[lRun1 * 6 + 1];
-acadoWorkspace.objValueIn[5] = acadoVariables.od[lRun1 * 6 + 2];
-acadoWorkspace.objValueIn[6] = acadoVariables.od[lRun1 * 6 + 3];
-acadoWorkspace.objValueIn[7] = acadoVariables.od[lRun1 * 6 + 4];
-acadoWorkspace.objValueIn[8] = acadoVariables.od[lRun1 * 6 + 5];
+acadoWorkspace.objValueIn[3] = acadoVariables.od[lRun1 * 8];
+acadoWorkspace.objValueIn[4] = acadoVariables.od[lRun1 * 8 + 1];
+acadoWorkspace.objValueIn[5] = acadoVariables.od[lRun1 * 8 + 2];
+acadoWorkspace.objValueIn[6] = acadoVariables.od[lRun1 * 8 + 3];
+acadoWorkspace.objValueIn[7] = acadoVariables.od[lRun1 * 8 + 4];
+acadoWorkspace.objValueIn[8] = acadoVariables.od[lRun1 * 8 + 5];
+acadoWorkspace.objValueIn[9] = acadoVariables.od[lRun1 * 8 + 6];
+acadoWorkspace.objValueIn[10] = acadoVariables.od[lRun1 * 8 + 7];
 
 acado_evaluateLSQ( acadoWorkspace.objValueIn, acadoWorkspace.objValueOut );
 acadoWorkspace.Dy[lRun1 * 3] = acadoWorkspace.objValueOut[0] - acadoVariables.y[lRun1 * 3];
@@ -1273,12 +1285,14 @@ acadoWorkspace.Dy[lRun1 * 3 + 2] = acadoWorkspace.objValueOut[2] - acadoVariable
 }
 acadoWorkspace.objValueIn[0] = acadoVariables.x[40];
 acadoWorkspace.objValueIn[1] = acadoVariables.x[41];
-acadoWorkspace.objValueIn[2] = acadoVariables.od[120];
-acadoWorkspace.objValueIn[3] = acadoVariables.od[121];
-acadoWorkspace.objValueIn[4] = acadoVariables.od[122];
-acadoWorkspace.objValueIn[5] = acadoVariables.od[123];
-acadoWorkspace.objValueIn[6] = acadoVariables.od[124];
-acadoWorkspace.objValueIn[7] = acadoVariables.od[125];
+acadoWorkspace.objValueIn[2] = acadoVariables.od[160];
+acadoWorkspace.objValueIn[3] = acadoVariables.od[161];
+acadoWorkspace.objValueIn[4] = acadoVariables.od[162];
+acadoWorkspace.objValueIn[5] = acadoVariables.od[163];
+acadoWorkspace.objValueIn[6] = acadoVariables.od[164];
+acadoWorkspace.objValueIn[7] = acadoVariables.od[165];
+acadoWorkspace.objValueIn[8] = acadoVariables.od[166];
+acadoWorkspace.objValueIn[9] = acadoVariables.od[167];
 acado_evaluateLSQEndTerm( acadoWorkspace.objValueIn, acadoWorkspace.objValueOut );
 acadoWorkspace.DyN[0] = acadoWorkspace.objValueOut[0] - acadoVariables.yN[0];
 acadoWorkspace.DyN[1] = acadoWorkspace.objValueOut[1] - acadoVariables.yN[1];

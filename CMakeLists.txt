@@ -8,9 +8,18 @@ project(nmpc_robo)
 ## if COMPONENTS list like find_package(catkin REQUIRED COMPONENTS xyz)
 ## is used, also find other catkin packages
 find_package(catkin REQUIRED COMPONENTS
+  geometry_msgs
+  #libmavconn
+  #mavlink
+  #mavros
+  rosconsole_bridge
   roscpp
   rospy
+  sensor_msgs
   std_msgs
+  std_srvs
+  tf
+  nav_msgs
   message_generation
 )
 
@@ -48,11 +57,11 @@ find_package(catkin REQUIRED COMPONENTS
 ##   * add every package in MSG_DEP_SET to generate_messages(DEPENDENCIES ...)
 
 ## Generate messages in the 'msg' folder
-# add_message_files(
-#   FILES
-#   Message1.msg
-#   Message2.msg
-# )
+ add_message_files(
+   FILES
+   wp.msg
+   ToOffboard.msg
+ )
 
 ## Generate services in the 'srv' folder
  add_service_files(
@@ -73,6 +82,8 @@ find_package(catkin REQUIRED COMPONENTS
  generate_messages(
    DEPENDENCIES
    std_msgs
+   geometry_msgs
+   sensor_msgs
  )
 
 ################################################
@@ -292,6 +303,15 @@ target_link_libraries(send_fixed_pose
   ${catkin_LIBRARIES}
   ${Boost_LIBRARIES}
 )
+
+#add_executable(getrpy
+#  src/getrpy.cpp
+#)
+#target_link_libraries(getrpy
+
+  #${catkin_LIBRARIES}
+  #${Boost_LIBRARIES}
+#)
 
 add_executable(otimizador src/otimizador.cpp)
 target_link_libraries(otimizador ${catkin_LIBRARIES})

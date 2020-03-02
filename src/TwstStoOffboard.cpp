@@ -2,7 +2,7 @@
 #include "ros/ros.h"
 #include "geometry_msgs/TwistStamped.h"
 #include <sstream>
-#include "/home/viki/catkin_ws/src/nmpc_robo/include/ToOffboard.h" // Trocar aqui para seu computador tambem
+#include "/home/gapc/catkin_ws/src/nmpc_robo/include/ToOffboard.h" // Trocar aqui para seu computador tambem
 
 using namespace std;
 

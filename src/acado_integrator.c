@@ -30,8 +30,8 @@ real_t auxVar[ 7 ];
 
 real_t rk_ttt;
 
-/** Row vector of size: 9 */
-real_t rk_xxx[ 9 ];
+/** Row vector of size: 11 */
+real_t rk_xxx[ 11 ];
 
 /** Column vector of size: 2 */
 real_t rk_kkk[ 2 ];
@@ -80,7 +80,7 @@ a[5] = (cos(od[2]));
 a[6] = (tan(od[4]));
 
 /* Compute outputs: */
-out[0] = ((((a[0]/a[1])*od[5])*(real_t)(5.0000000000000000e-01))+(((((a[2]/a[3])*od[5])*od[3])+((a[4]*a[5])*(real_t)(2.0000000000000001e-01)))*a[6]));
+out[0] = ((((a[0]/a[1])*od[5])*od[6])+(((((a[2]/a[3])*od[5])*od[3])+((a[4]*a[5])*od[7]))*a[6]));
 out[1] = u[0];
 }
 
@@ -201,6 +201,8 @@ rk_xxx[5] = rk_eta[11];
 rk_xxx[6] = rk_eta[12];
 rk_xxx[7] = rk_eta[13];
 rk_xxx[8] = rk_eta[14];
+rk_xxx[9] = rk_eta[15];
+rk_xxx[10] = rk_eta[16];
 
 for (run = 0; run < 2; ++run)
 {

@@ -6,7 +6,7 @@
 #include <geometry_msgs/PoseStamped.h>
 
 //#include <vant/ToOffboard.h> //Antes
-#include "/home/viki/catkin_ws/src/nmpc_robo/include/ToOffboard.h" //RODRIGO ALTEROU ISSO AQUI obs: mudar pra cada computador
+#include "/home/gapc/catkin_ws/src/nmpc_robo/include/ToOffboard.h" //RODRIGO ALTEROU ISSO AQUI obs: mudar pra cada computador
 
 #include <iostream>
 

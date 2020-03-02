@@ -5,7 +5,7 @@
 
 import rospy, cv2, cv_bridge, numpy, sys
 from sensor_msgs.msg import Image
-from geometry_msgs.msg import Twist
+from geometry_msgs.msg import TwistStamped
 from random import randint
 import numpy as np
 from roslib import message
@@ -19,6 +19,14 @@ xr=None
 yr=None
 thr=None
 z = None
+roll = None
+pitch = None
+yaw = None
+altitudeZ = 0
+integralZ = 0
+last_erroZ = 0
+distH = 0
+vel_linear = 0
 
 # Funcionou para mundotrab3.world
 # mundo4.world ta bom tbm
@@ -45,30 +53,45 @@ class Follower:
                 self.erro = 0
                 self.minimo = 0
                 self.bridge = cv_bridge.CvBridge()
-                self.omega = 0
-                self.omega_atual = 0
-                self.omega_anterior = 0
+                self.r = 0 # Velocidade Angular (Yaw)
+                self.r_atual = 0
+                self.r_anterior = 0
+
+
                 cv2.namedWindow("window", 1)
 
-                self.image_sub = rospy.Subscriber('/camera/rgb/image_raw',
+
+                self.image_sub = rospy.Subscriber('gazebo/camera/image_raw',
                         Image, self.image_callback)
 
-                self.cmd_vel_pub = rospy.Publisher('/cmd_vel',
-                        Twist, queue_size=1)
+                self.cmd_vel_pub = rospy.Publisher('/setpoint_offboard_TwstS',
+                        TwistStamped, queue_size=1)
 
-                self.twist = Twist()
-                rospy.Subscriber('/camera/depth/image_raw',Image,self.get_distance)
+                self.twistS = TwistStamped()
+                ##rospy.Subscriber('/camera/depth/image_raw',Image,self.get_distance)
 
-                rospy.Subscriber('/odom',Odometry,self.callback_odom)
+                rospy.Subscriber('mavros/local_position/odom',Odometry,self.callback_odom)
+                self.Odom = Odometry ()
 
                 #self.otimiza = self.callback_client(self.omega,self.ze,self.thetar)
 
-                
-        def callback_client(self,omega,ze,thetar):
+        def pidZ(self, erro, kp, ki, kd):
+            global integralZ
+            global last_erroZ
+            integralZ += erro
+            derivative = erro - last_erroZ
+            last_erroZ = erro
+            return kp * erro + ki * integralZ + kd * derivative
+
+
+
+
+
+        def callback_client(self,roll,pitch,yaw,ze,phir,r,altitudeZ,vel_linear):
                 rospy.wait_for_service('otimizador')
                 try:
                         self.otimizador = rospy.ServiceProxy('otimizador', otimizador)
-                        self.resposta = self.otimizador(self.omega,self.ze,self.thetar)
+                        self.resposta = self.otimizador(roll,pitch,yaw,self.ze,self.phir,self.r,distH,vel_linear)
                         print('resposta:', self.resposta.u)
                         return self.resposta.u
                 except rospy.ServiceException, e:
@@ -83,7 +106,7 @@ class Follower:
             global pitch
             global yaw  
             global tf
-            global omega
+            global r
             global ze
             global thetar
 
@@ -102,6 +125,8 @@ class Follower:
             msg.pose.pose.orientation.w
             )
             euler = euler_from_quaternion(quaternion)
+            global altitudeZ
+            altitudeZ = msg.pose.pose.position.z
             roll = euler[0]
             pitch = euler[1]
             yaw = euler[2]        
@@ -211,34 +236,44 @@ class Follower:
                 #################################################################################################################################
 
 
-                vel_linear = 1 # Velocidade Linear do robô
-                conv = 0.00125 #Conversão de metros 
-                h1 = 0.5  # 0.5 metros
+                vel_linear = 0.5 # Velocidade Linear do robô
+                conv = 0.00125*2 #Conversão de metros 
+                altitude = 1.5
+                ##h1 = altitudeZ  # 0.5 metros
+                distH = altitudeZ*np.tan(np.pi/4)
+                print('disth',distH)
                 self.ze = (self.erro)*(conv) # Z (metros) é igual ao erro (o quanto o centróide está distante do centro da câmera) multiplicado por um fator de conversão (pixel para metros)
-                self.thetar = np.arctan2(self.ze,h1) # ThetaR é igual a tangente entre o erro Z e a distância da câmera ao centróide (z) em Rad.
+                self.phir = np.arctan2(self.ze,distH) # ThetaR é igual a tangente entre o erro Z e a distância da câmera ao centróide (z) em Rad.
 
-                self.omega = self.omega_anterior
-                print('ze',self.ze)
-                print ('thetar',self.thetar)
-                print ('omega',self.omega)
+                self.r = self.r_anterior
+                #print('ze',self.ze)
+                #print ('thetar',self.thetar)
+                ## ('omega',self.omega)
 
 
-                self.otimiza = self.callback_client(self.omega,self.ze,self.thetar) # Manda as variáveis de interesse para o otimizador.
+
+                self.otimiza = self.callback_client(roll,pitch,yaw,self.ze,self.phir,self.r,distH,vel_linear) # Manda as variáveis de interesse para o otimizador.
                 uoptimal = self.resposta.u ## A variavel de entrada u é recebida pela variável resposta.u .
 
-                self.omega_atual = (uoptimal*np.cos(self.thetar) + curvature[1]*vel_linear) / ((np.cos(self.thetar) - curvature[1]*self.ze)) # Cálculo do omega que será aplicado ao robô
-
-                self.twist.linear.x = vel_linear
-                self.twist.angular.z = -(self.omega_atual)
-                self.omega_anterior = self.omega_atual          
+                self.r_atual = (uoptimal*np.cos(self.phir) + curvature[1]*np.cos(pitch)*np.cos(yaw)*vel_linear) / ((np.cos(self.phir) - curvature[1]*self.ze)*(np.cos(roll)/np.cos(pitch))) # Cálculo do omega que será aplicado ao robô
+                ## Multiplicar por 3 melhorou o controle - Provavelmente se aumentar o ganho da saída no otimizador consiga melhores resultados.
+                ## Adicionar as parcelas referentes a velocidade em y .
+                self.twistS.twist.linear.x = vel_linear*np.cos(yaw)
+                self.twistS.twist.linear.y = vel_linear*np.sin(yaw)
+                #print(self.twistS.twist.linear.x)
+                self.twistS.twist.angular.z = 4*(self.r_atual)
+                self.r_anterior = self.r_atual   
+                print(self.ze)
+     
 
                 #self.twist.linear.x = 0
                 #self.twist.angular.z = 0
-
-
+                d_altitude = 1.5 - altitudeZ
+                self.twistS.twist.linear.z = self.pidZ(d_altitude, 0.5, 0.0001, 0.1)
+                self.cmd_vel_pub.publish(self.twistS)
                             
                 
-                self.cmd_vel_pub.publish(self.twist)
+                ##self.cmd_vel_pub.publish(self.twist)
 
                 cv2.imshow("window", image)
                 cv2.imshow("window1",mask)

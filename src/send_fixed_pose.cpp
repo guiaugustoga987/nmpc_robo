@@ -30,9 +30,9 @@
 //////////////
 
 //#include <vaant.h> //ANTES ESTAVA ASSIM
-#include "/home/viki/catkin_ws/src/nmpc_robo/include/vaant.h"    //RODRIGO ALTEROU ISSO AQUI
+#include "/home/gapc/catkin_ws/src/nmpc_robo/include/vaant.h"    //RODRIGO ALTEROU ISSO AQUI
 //#include <ToOffboard.h> //ANTES
-#include "/home/viki/catkin_ws/src/nmpc_robo/include/ToOffboard.h" //RODRIGO ALTEROU ISSO AQUI
+#include "/home/gapc/catkin_ws/src/nmpc_robo/include/ToOffboard.h" //RODRIGO ALTEROU ISSO AQUI
 
 
 

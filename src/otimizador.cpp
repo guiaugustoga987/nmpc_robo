@@ -15,7 +15,7 @@
 
 #define N           ACADO_N   /* Number of intervals in the horizon. */
 
-#define NUM_STEPS   5        /* Number of real-time iterations. */
+#define NUM_STEPS   10        /* Number of real-time iterations. */
 #define VERBOSE     1         /* Show iterations: 1, silent: 0.  */
 
 /* Global variables used by the solver. */
@@ -67,6 +67,9 @@ acadoVariables.od[2] = req.c; // yaw
 acadoVariables.od[3] = req.d; // z
 acadoVariables.od[4] = req.e; // phir
 acadoVariables.od[5] = req.f; // r
+acadoVariables.od[6] = req.g; // H
+acadoVariables.od[7] = req.h; // ux
+
 //
 
 // Inicio do Solver

@@ -39,9 +39,9 @@
 //#include <Eigen/Core>
 //#include <Eigen/Geometry>
 //#include <Eigen/LU>
-#include "/home/viki/catkin_ws/src/nmpc_robo/include/Eigen/Core"
-#include "/home/viki/catkin_ws/src/nmpc_robo/include/Eigen/Geometry"
-#include "/home/viki/catkin_ws/src/nmpc_robo/include/Eigen/LU"
+#include "/home/gapc/catkin_ws/src/nmpc_robo/include/Eigen/Core"
+#include "/home/gapc/catkin_ws/src/nmpc_robo/include/Eigen/Geometry"
+#include "/home/gapc/catkin_ws/src/nmpc_robo/include/Eigen/LU"
 
 using namespace std;
 
